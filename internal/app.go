@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	userSvc "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/middleware"
@@ -52,8 +51,8 @@ func NewApp() *App {
 }
 
 func (a *App) Run() {
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer cancel()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	appsWg := &sync.WaitGroup{}
 	errChan := make(chan error, 1)
@@ -70,11 +69,13 @@ func (a *App) Run() {
 	select {
 	case <-ctx.Done():
 		a.log.Info("Received shutdown signal, shutting down...")
-		cancel()
+		if err := a.Server.Shutdown(ctx); err != nil {
+			a.log.Error("Failed to shutdown server: " + err.Error())
+		}
 	case err := <-errChan:
-		a.log.Error(fmt.Sprintf("Server error: %v", err))
+		a.log.Error("Server error: " + err.Error())
 	}
 
 	appsWg.Wait()
-	a.log.Info("Shutting down gracefully...")
+	a.log.Info("Server stopped gracefully")
 }

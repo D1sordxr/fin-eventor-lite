@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"errors"
 	"net/http"
 )
@@ -43,4 +44,8 @@ func (s *Server) StartServer() error {
 	}
 
 	return nil
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.Server.Shutdown(ctx)
 }
