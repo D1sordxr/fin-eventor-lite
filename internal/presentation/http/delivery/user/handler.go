@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fin-eventor-lite/internal/application/user"
-	"fin-eventor-lite/pkg"
+	"github.com/D1sordxr/fin-eventor-lite/internal/application/user"
+	"github.com/D1sordxr/fin-eventor-lite/pkg"
 	"net/http"
 )
 

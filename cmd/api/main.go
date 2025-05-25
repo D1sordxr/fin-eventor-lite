@@ -1,6 +1,6 @@
 package main
 
-import "fin-eventor-lite/internal"
+import "github.com/D1sordxr/fin-eventor-lite/internal"
 
 func main() {
 	app := internal.NewApp()

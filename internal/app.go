@@ -2,11 +2,12 @@ package internal
 
 import (
 	"context"
-	userSvc "fin-eventor-lite/internal/application/user"
-	appSrv "fin-eventor-lite/internal/presentation/http"
-	"fin-eventor-lite/internal/presentation/http/delivery/middleware"
-	"fin-eventor-lite/internal/presentation/http/delivery/user"
-	"fin-eventor-lite/pkg"
+	"fmt"
+	userSvc "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
+	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
+	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/middleware"
+	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/user"
+	"github.com/D1sordxr/fin-eventor-lite/pkg"
 	"log/slog"
 	"net/http"
 	"os"
@@ -69,9 +70,9 @@ func (a *App) Run() {
 	select {
 	case <-ctx.Done():
 		a.log.Info("Received shutdown signal, shutting down...")
+		cancel()
 	case err := <-errChan:
-		_ = err
-		a.log.Error("Server error: %v", err)
+		a.log.Error(fmt.Sprintf("Server error: %v", err))
 	}
 
 	appsWg.Wait()

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fin-eventor-lite/pkg"
+	"github.com/D1sordxr/fin-eventor-lite/pkg"
 	"net/http"
 	"time"
 )
