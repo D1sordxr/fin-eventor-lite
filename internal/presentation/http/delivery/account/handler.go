@@ -1,53 +1,49 @@
-package user
+package account
 
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
-	"github.com/D1sordxr/fin-eventor-lite/internal/application/user"
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
+	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
 	"github.com/D1sordxr/fin-eventor-lite/pkg"
 )
 
-type UseCase interface {
+type useCase interface {
 	Create(ctx context.Context, dto domain.DTO) (string, error)
 }
 
 type Handler struct {
-	uc          UseCase
+	uc          useCase
 	chainer     pkg.MidChainer
 	middlewares []func(next http.Handler) http.Handler
 }
 
 func NewHandler(
-	uc UseCase,
-	chainer pkg.MidChainer,
-	middlewares ...func(next http.Handler) http.Handler,
+	uc useCase,
+	ch pkg.MidChainer,
+	m []func(next http.Handler) http.Handler,
 ) *Handler {
 	return &Handler{
 		uc:          uc,
-		chainer:     chainer,
-		middlewares: middlewares,
+		chainer:     ch,
+		middlewares: m,
 	}
 }
 
-func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var dto domain.DTO
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	userID, err := h.uc.Create(r.Context(), dto)
+	accountID, err := h.uc.Create(r.Context(), dto)
 	if err != nil {
 		switch {
 
 		// TODO: handle other specific errors
 
-		case errors.Is(err, user.ErrBossUsername):
-			http.Error(w, "Username 'b0ss' is reserved", http.StatusTeapot)
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -57,11 +53,8 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]string{
-		"id":      userID,
-		"message": "User created successfully",
+		"id":      accountID,
+		"message": "Account created successfully",
 	})
-}
 
-func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/users", h.chainer.WithMidChain(h.CreateUser, h.middlewares...))
 }
