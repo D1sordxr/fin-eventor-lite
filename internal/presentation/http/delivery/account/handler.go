@@ -10,6 +10,7 @@ import (
 
 type useCase interface {
 	Create(ctx context.Context, dto domain.DTO) (string, error)
+	Deposit(ctx context.Context, dto domain.DTO) error
 }
 
 type Handler struct {
@@ -56,4 +57,28 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		"message": "Account created successfully",
 	})
 
+}
+
+func (h *Handler) Deposit(w http.ResponseWriter, r *http.Request) {
+	var dto domain.DTO
+	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.uc.Deposit(r.Context(), dto); err != nil {
+		switch {
+
+		// TODO: handle other specific errors
+
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(map[string]string{
+		"message": "Deposit successful",
+	})
 }
