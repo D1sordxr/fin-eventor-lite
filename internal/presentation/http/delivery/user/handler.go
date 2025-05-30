@@ -4,26 +4,25 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 	"net/http"
 
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/user"
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
-	"github.com/D1sordxr/fin-eventor-lite/pkg"
 )
 
 type UseCase interface {
-	Create(ctx context.Context, dto domain.DTO) (string, error)
+	Create(ctx context.Context, dto user.DTO) (string, error)
 }
 
 type Handler struct {
 	uc          UseCase
-	chainer     pkg.MidChainer
+	chainer     interfaces.MidChainer
 	middlewares []func(next http.Handler) http.Handler
 }
 
 func NewHandler(
 	uc UseCase,
-	chainer pkg.MidChainer,
+	chainer interfaces.MidChainer,
 	middlewares ...func(next http.Handler) http.Handler,
 ) *Handler {
 	return &Handler{
@@ -34,7 +33,7 @@ func NewHandler(
 }
 
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var dto domain.DTO
+	var dto user.DTO
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return

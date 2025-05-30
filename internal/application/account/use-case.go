@@ -2,24 +2,22 @@ package account
 
 import (
 	"context"
-
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
 )
 
 type UseCase struct {
-	svc  Svc
-	repo Repository
+	svc  svc
+	repo repository
 }
 
 func NewUseCase(
-	svc Svc,
+	svc svc,
 ) *UseCase {
 	return &UseCase{
 		svc: svc,
 	}
 }
 
-func (uc *UseCase) Create(ctx context.Context, dto domain.DTO) (string, error) {
+func (uc *UseCase) Create(ctx context.Context, dto DTO) (string, error) {
 	entity, err := uc.svc.CreateEntity(dto.UserID)
 	if err != nil {
 		return "", err

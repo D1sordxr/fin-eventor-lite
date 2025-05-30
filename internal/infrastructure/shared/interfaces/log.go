@@ -1,4 +1,4 @@
-package pkg
+package interfaces
 
 type Log interface {
 	Info(msg string, args ...interface{})

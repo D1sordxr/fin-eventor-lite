@@ -1,5 +1,7 @@
 package user
 
+import "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
+
 type Converter struct{}
 
 // TODO: create infra own converter
@@ -11,8 +13,8 @@ type Converter struct{}
 // 	}
 // }
 
-func (*Converter) EntityToDTO(entity Entity) DTO {
-	return DTO{
+func (*Converter) EntityToDTO(entity Entity) user.DTO {
+	return user.DTO{
 		ID:       entity.ID.String(),
 		Username: entity.Username,
 	}

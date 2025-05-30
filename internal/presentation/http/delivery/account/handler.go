@@ -3,10 +3,9 @@ package account
 import (
 	"context"
 	"encoding/json"
+	domain "github.com/D1sordxr/fin-eventor-lite/internal/application/account"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 	"net/http"
-
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
-	"github.com/D1sordxr/fin-eventor-lite/pkg"
 )
 
 type useCase interface {
@@ -15,13 +14,13 @@ type useCase interface {
 
 type Handler struct {
 	uc          useCase
-	chainer     pkg.MidChainer
+	chainer     interfaces.MidChainer
 	middlewares []func(next http.Handler) http.Handler
 }
 
 func NewHandler(
 	uc useCase,
-	ch pkg.MidChainer,
+	ch interfaces.MidChainer,
 	m []func(next http.Handler) http.Handler,
 ) *Handler {
 	return &Handler{

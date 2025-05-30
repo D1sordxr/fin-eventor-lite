@@ -1,12 +1,13 @@
-package internal
+package bootstrap
 
 import (
 	"context"
 	userSvc "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/middleware"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/user"
-	"github.com/D1sordxr/fin-eventor-lite/pkg"
 	"log/slog"
 	"net/http"
 	"os"
@@ -16,14 +17,14 @@ import (
 )
 
 type App struct {
-	log    pkg.Log
+	log    interfaces.Log
 	Server *appSrv.Server
 }
 
 func NewApp() *App {
 	log := slog.Default()
 
-	chainer := new(middleware.Chainer)
+	chainer := new(shared.Chainer)
 
 	logMid := middleware.NewLogMid(log)
 	methodPostMid := middleware.NewMethodMid(http.MethodPost)

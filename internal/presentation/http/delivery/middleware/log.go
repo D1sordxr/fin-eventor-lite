@@ -1,16 +1,16 @@
 package middleware
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/pkg"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 	"net/http"
 	"time"
 )
 
 type LogMid struct {
-	log pkg.Log
+	log interfaces.Log
 }
 
-func NewLogMid(log pkg.Log) *LogMid {
+func NewLogMid(log interfaces.Log) *LogMid {
 	return &LogMid{
 		log: log,
 	}
@@ -19,10 +19,39 @@ func NewLogMid(log pkg.Log) *LogMid {
 func (m *LogMid) Log(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			now := time.Now()
-			m.log.Info("Starting request...", "time", now)
-			next.ServeHTTP(w, r)
-			m.log.Info("Request finished.", "time-since-start", time.Since(now))
+			start := time.Now()
+
+			lrw := &loggingResponseWriter{ResponseWriter: w}
+
+			m.log.Info(
+				"Request started",
+				"method", r.Method,
+				"path", r.URL.Path,
+				"ip", r.RemoteAddr,
+				"user-agent", r.UserAgent(),
+			)
+
+			next.ServeHTTP(lrw, r)
+
+			m.log.Info(
+				"Request completed",
+				"status", lrw.statusCode,
+				"method", r.Method,
+				"path", r.URL.Path,
+				"ip", r.RemoteAddr,
+				"latency", time.Since(start).String(),
+				"user-agent", r.UserAgent(),
+			)
 		},
 	)
+}
+
+type loggingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (lrw *loggingResponseWriter) WriteHeader(code int) {
+	lrw.statusCode = code
+	lrw.ResponseWriter.WriteHeader(code)
 }

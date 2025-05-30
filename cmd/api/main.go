@@ -1,8 +1,10 @@
 package main
 
-import "github.com/D1sordxr/fin-eventor-lite/internal"
+import (
+	"github.com/D1sordxr/fin-eventor-lite/internal/bootstrap"
+)
 
 func main() {
-	app := internal.NewApp()
+	app := bootstrap.NewApp()
 	app.Run()
 }

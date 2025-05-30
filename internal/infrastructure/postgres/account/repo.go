@@ -2,18 +2,17 @@ package account
 
 import (
 	"context"
-
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
-	"github.com/D1sordxr/fin-eventor-lite/pkg"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 )
 
 type Repository struct {
-	e pkg.Executor
+	e interfaces.Executor
 	c converter
 }
 
 func NewRepository(
-	e pkg.Executor,
+	e interfaces.Executor,
 	c converter,
 ) *Repository {
 	return &Repository{
