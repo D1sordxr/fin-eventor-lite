@@ -19,6 +19,10 @@ type eventStore interface {
 	Save(ctx context.Context, event account.Event) error
 }
 
+type dao interface {
+	GetByID(ctx context.Context, id string) (DTO, error)
+}
+
 type msgProducer interface {
 	Publish(ctx context.Context, payload []byte) error
 	// Publish(ctx context.Context, topic string, key string, value []byte) error

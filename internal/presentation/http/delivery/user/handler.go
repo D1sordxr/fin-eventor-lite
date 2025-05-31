@@ -32,7 +32,7 @@ func NewHandler(
 	}
 }
 
-func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var dto user.DTO
 	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -62,5 +62,5 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/users", h.chainer.WithMidChain(h.CreateUser, h.middlewares...))
+	mux.HandleFunc("/users", h.chainer.WithMidChain(h.Create, h.middlewares...))
 }

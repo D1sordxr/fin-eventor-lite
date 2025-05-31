@@ -6,6 +6,7 @@ import (
 
 type UseCase struct {
 	svc      svc
+	dao      dao
 	repo     repository
 	es       eventStore
 	producer msgProducer
@@ -52,4 +53,13 @@ func (uc *UseCase) Deposit(ctx context.Context, dto DTO) error {
 	}
 
 	return nil
+}
+
+func (uc *UseCase) GetAccountBalance(ctx context.Context, accountID string) (float64, error) {
+	dto, err := uc.dao.GetByID(ctx, accountID)
+	if err != nil {
+		return 0, err
+	}
+
+	return dto.Balance, nil
 }

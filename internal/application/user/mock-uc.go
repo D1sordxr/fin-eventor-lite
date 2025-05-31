@@ -2,13 +2,23 @@ package user
 
 import (
 	"context"
+	"errors"
+	"github.com/google/uuid"
 )
 
 type MockUseCase struct{}
 
 func (*MockUseCase) Create(_ context.Context, dto DTO) (string, error) {
-	if dto.Username == "b0ss" {
+	switch dto.Username {
+	case "b0ss":
 		return "", ErrBossUsername
+	case "":
+		return "", ErrEmptyUsername
+	default:
+		if dto.Username == "error" {
+			return "", errors.New("mock error")
+		}
 	}
-	return "this-is-a-mock-id", nil
+
+	return uuid.NewString(), nil
 }

@@ -6,8 +6,8 @@ import (
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
-	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/middleware"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/user"
+	middleware2 "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/middleware"
 	"log/slog"
 	"net/http"
 	"os"
@@ -26,10 +26,10 @@ func NewApp() *App {
 
 	chainer := new(shared.Chainer)
 
-	logMid := middleware.NewLogMid(log)
-	methodPostMid := middleware.NewMethodMid(http.MethodPost)
-	semaphoreMid := middleware.NewSemaphoreMid()
-	retryMid := new(middleware.RetryMid)
+	logMid := middleware2.NewLogMid(log)
+	methodPostMid := middleware2.NewMethodMid(http.MethodPost)
+	semaphoreMid := middleware2.NewSemaphoreMid()
+	retryMid := new(middleware2.RetryMid)
 
 	userHandler := user.NewHandler(
 		new(userSvc.MockUseCase),

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "./services";
+
+// proto gen cmd: protoc --go_out=. --go-grpc_out=. --proto_path=. account.proto
+
+message GetBalanceRequest {
+  string accountID = 1;
+}
+
+message GetBalanceResponse {
+  float balance = 1;
+}
+
+service AccountService {
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+}
