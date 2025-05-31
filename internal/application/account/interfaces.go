@@ -27,3 +27,7 @@ type msgProducer interface {
 	Publish(ctx context.Context, payload []byte) error
 	// Publish(ctx context.Context, topic string, key string, value []byte) error
 }
+
+type depositSvc interface {
+	CreateUpdatedAccount(event EventDTO, oldBalance float64) (account.Entity, error)
+}

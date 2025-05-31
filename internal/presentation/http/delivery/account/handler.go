@@ -116,9 +116,7 @@ func (h *ClientHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	accountID := r.URL.Query().Get("account_id")
-	resp, err := h.client.GetBalance(ctx, &services.GetBalanceRequest{
-		AccountID: accountID,
-	})
+	resp, err := h.client.GetBalance(ctx, &services.GetBalanceRequest{AccountID: accountID})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -131,6 +129,6 @@ func (h *ClientHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h *ClientHandler) RegisterClientRoutes(mux *http.ServeMux) {
+func (h *ClientHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/accounts/balance", h.chainer.WithMidChain(h.GetBalance, h.middlewares...))
 }
