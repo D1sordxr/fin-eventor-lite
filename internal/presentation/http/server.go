@@ -49,3 +49,17 @@ func (s *Server) StartServer() error {
 func (s *Server) Shutdown(ctx context.Context) error {
 	return s.Server.Shutdown(ctx)
 }
+
+// TODO: Client routes
+
+type ClientHandler interface {
+	RegisterClientRoutes(mux *http.ServeMux)
+}
+
+func (s *Server) RegisterClientRoutes(mux *http.ServeMux, routes ...ClientHandler) {
+	for _, route := range routes {
+		if clientHandler, ok := route.(ClientHandler); ok {
+			clientHandler.RegisterClientRoutes(mux)
+		}
+	}
+}
