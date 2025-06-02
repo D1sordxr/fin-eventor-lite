@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account/events/deposit"
 	"github.com/google/uuid"
@@ -14,7 +15,7 @@ func (*Svc) CreateEntity(
 ) (account.Entity, error) {
 	uID, err := uuid.Parse(userID)
 	if err != nil {
-		return account.Entity{}, err
+		return account.Entity{}, errors.ErrInvalidUserID
 	}
 
 	return account.Entity{
@@ -29,7 +30,7 @@ func (*Svc) CreateDepositEvent(
 	amount float64,
 ) (deposit.Event, error) {
 	if err := uuid.Validate(accountID); err != nil {
-		return deposit.Event{}, err
+		return deposit.Event{}, errors.ErrInvalidAccountID
 	}
 
 	return deposit.Event{

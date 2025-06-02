@@ -3,7 +3,9 @@ package account
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
+	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
 	"net/http"
 )
@@ -22,7 +24,7 @@ type Handler struct {
 func NewHandler(
 	uc useCase,
 	ch middleware.Chainer,
-	m []func(next http.Handler) http.Handler,
+	m ...func(next http.Handler) http.Handler,
 ) *Handler {
 	return &Handler{
 		uc:          uc,
@@ -41,11 +43,14 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	accountID, err := h.uc.Create(r.Context(), dto)
 	if err != nil {
 		switch {
-
-		// TODO: handle other specific errors
-
+		case errors.Is(err, accountErrors.ErrAccountAlreadyExists):
+			http.Error(w, "Account already exists", http.StatusConflict)
+		case errors.Is(err, accountErrors.ErrInvalidUserID):
+			http.Error(w, "Invalid user ID format", http.StatusBadRequest)
+		case errors.Is(err, accountErrors.ErrUserDoesNotExist):
+			http.Error(w, "User does not exist", http.StatusBadRequest)
 		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 		return
 	}
@@ -68,9 +73,10 @@ func (h *Handler) Deposit(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.uc.Deposit(r.Context(), dto); err != nil {
 		switch {
-
-		// TODO: handle other specific errors
-
+		case errors.Is(err, accountErrors.ErrInvalidAccountID):
+			http.Error(w, "Invalid account ID format", http.StatusBadRequest)
+		case errors.Is(err, accountErrors.ErrAccountDoesNotExist):
+			http.Error(w, "Account does not exist", http.StatusNotFound)
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

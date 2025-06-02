@@ -22,8 +22,12 @@ func NewUseCase(
 }
 
 func (u *UseCase) Create(ctx context.Context, dto dto.DTO) (string, error) {
-	entity := u.svc.CreateEntity(dto.Username)
-	if err := u.repo.Save(ctx, entity); err != nil {
+	entity, err := u.svc.CreateEntity(dto.Username)
+	if err != nil {
+		return "", err
+	}
+
+	if err = u.repo.Save(ctx, entity); err != nil {
 		return "", err
 	}
 

@@ -5,5 +5,5 @@ import (
 )
 
 type Svc interface {
-	CreateEntity(username string) user.Entity
+	CreateEntity(username string) (user.Entity, error)
 }

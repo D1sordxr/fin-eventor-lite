@@ -21,13 +21,13 @@ func NewProcessor(uc useCase) *Handler {
 }
 
 func (p *Handler) Handle(ctx context.Context, payload []byte) error {
-	var dto dto.EventDTO
-	err := json.Unmarshal(payload, &dto)
+	var data dto.EventDTO
+	err := json.Unmarshal(payload, &data)
 	if err != nil {
 		return err
 	}
 
-	if err = p.uc.ProcessDeposit(ctx, dto); err != nil {
+	if err = p.uc.ProcessDeposit(ctx, data); err != nil {
 		return err
 	}
 

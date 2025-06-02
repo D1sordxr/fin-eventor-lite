@@ -18,7 +18,7 @@ type ClientHandler struct {
 func NewClientHandler(
 	client services.AccountServiceClient,
 	ch middleware.Chainer,
-	m []func(next http.Handler) http.Handler,
+	m ...func(next http.Handler) http.Handler,
 ) *ClientHandler {
 	return &ClientHandler{
 		client:      client,

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
 	"sync"
 )
@@ -17,7 +18,7 @@ func NewMockRepo() *MockRepo {
 	}
 }
 
-func (m *MockRepo) Save(e domain.Entity) error {
+func (m *MockRepo) Save(ctx context.Context, e domain.Entity) error {
 	m.m.Lock()
 	defer m.m.Unlock()
 

@@ -42,13 +42,14 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	userID, err := h.uc.Create(r.Context(), data)
 	if err != nil {
 		switch {
-
-		// TODO: handle other specific errors
-
+		case errors.Is(err, userErrors.ErrEmptyUsername):
+			http.Error(w, "Username cannot be empty", http.StatusUnprocessableEntity)
 		case errors.Is(err, userErrors.ErrBossUsername):
-			http.Error(w, "Username 'b0ss' is reserved", http.StatusTeapot)
+			http.Error(w, "Username 'b0ss' is reserved", http.StatusForbidden)
+		case errors.Is(err, userErrors.ErrUserAlreadyExists):
+			http.Error(w, "User already exists", http.StatusConflict)
 		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 		return
 	}

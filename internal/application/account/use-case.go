@@ -9,20 +9,17 @@ import (
 type UseCase struct {
 	svc      ports.Svc
 	repo     ports.Repository
-	es       ports.EventStore
 	producer ports.MsgProducer
 }
 
 func NewUseCase(
 	svc ports.Svc,
 	repo ports.Repository,
-	es ports.EventStore,
 	producer ports.MsgProducer,
 ) *UseCase {
 	return &UseCase{
 		svc:      svc,
 		repo:     repo,
-		es:       es,
 		producer: producer,
 	}
 }
@@ -43,10 +40,6 @@ func (uc *UseCase) Create(ctx context.Context, dto dto.DTO) (string, error) {
 func (uc *UseCase) Deposit(ctx context.Context, dto dto.DTO) error {
 	event, err := uc.svc.CreateDepositEvent(dto.ID, dto.Balance)
 	if err != nil {
-		return err
-	}
-
-	if err = uc.es.Save(ctx, event); err != nil {
 		return err
 	}
 

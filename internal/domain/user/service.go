@@ -1,19 +1,22 @@
 package user
 
-import "github.com/google/uuid"
+import (
+	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
+	"github.com/google/uuid"
+)
 
 type Svc struct{}
 
-func (*Svc) CreateEntity(username string) Entity {
-	if username == "" {
-		return Entity{
-			ID:       uuid.Nil,
-			Username: "",
-		}
+func (*Svc) CreateEntity(username string) (Entity, error) {
+	switch username {
+	case "":
+		return Entity{}, errors.ErrEmptyUsername
+	case "b0ss":
+		return Entity{}, errors.ErrBossUsername
 	}
 
 	return Entity{
 		ID:       uuid.New(),
 		Username: username,
-	}
+	}, nil
 }

@@ -37,7 +37,7 @@ func (s *Server) StartServer() error {
 
 	if err := s.Server.ListenAndServe(); err != nil {
 		if errors.Is(err, http.ErrServerClosed) {
-			// Server closed
+			// HttpServer closed
 			return nil
 		}
 		return err
