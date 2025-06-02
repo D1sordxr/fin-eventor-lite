@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 	userSvc "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/user"
 	middleware2 "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/middleware"
+	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"log/slog"
 	"net/http"
 	"os"
@@ -17,14 +17,14 @@ import (
 )
 
 type App struct {
-	log    interfaces.Log
+	log    ports.Log
 	Server *appSrv.Server
 }
 
 func NewApp() *App {
 	log := slog.Default()
 
-	chainer := new(shared.Chainer)
+	chainer := new(middleware.ChainerImpl)
 
 	logMid := middleware2.NewLogMid(log)
 	methodPostMid := middleware2.NewMethodMid(http.MethodPost)

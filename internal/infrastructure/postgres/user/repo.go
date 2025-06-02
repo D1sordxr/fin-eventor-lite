@@ -3,17 +3,17 @@ package user
 import (
 	"context"
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 )
 
 type Repository struct {
 	c Converter
-	e interfaces.Executor
+	e ports.Executor
 }
 
 func NewRepository(
 	c Converter,
-	e interfaces.Executor) *Repository {
+	e ports.Executor) *Repository {
 	return &Repository{
 		c: c,
 		e: e,

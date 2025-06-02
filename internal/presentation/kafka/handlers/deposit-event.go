@@ -3,11 +3,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github.com/D1sordxr/fin-eventor-lite/internal/application/account"
+	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
 )
 
 type useCase interface {
-	ProcessDeposit(ctx context.Context, dto account.EventDTO) error
+	ProcessDeposit(ctx context.Context, dto dto.EventDTO) error
 }
 
 type Handler struct {
@@ -21,7 +21,7 @@ func NewProcessor(uc useCase) *Handler {
 }
 
 func (p *Handler) Handle(ctx context.Context, payload []byte) error {
-	var dto account.EventDTO
+	var dto dto.EventDTO
 	err := json.Unmarshal(payload, &dto)
 	if err != nil {
 		return err

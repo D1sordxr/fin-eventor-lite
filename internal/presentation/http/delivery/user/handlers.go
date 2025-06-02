@@ -4,25 +4,25 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/dto"
+	userErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
 	"net/http"
-
-	"github.com/D1sordxr/fin-eventor-lite/internal/application/user"
 )
 
 type UseCase interface {
-	Create(ctx context.Context, dto user.DTO) (string, error)
+	Create(ctx context.Context, dto dto.DTO) (string, error)
 }
 
 type Handler struct {
 	uc          UseCase
-	chainer     interfaces.MidChainer
+	chainer     middleware.Chainer
 	middlewares []func(next http.Handler) http.Handler
 }
 
 func NewHandler(
 	uc UseCase,
-	chainer interfaces.MidChainer,
+	chainer middleware.Chainer,
 	middlewares ...func(next http.Handler) http.Handler,
 ) *Handler {
 	return &Handler{
@@ -33,19 +33,19 @@ func NewHandler(
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var dto user.DTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
+	var data dto.DTO
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	userID, err := h.uc.Create(r.Context(), dto)
+	userID, err := h.uc.Create(r.Context(), data)
 	if err != nil {
 		switch {
 
 		// TODO: handle other specific errors
 
-		case errors.Is(err, user.ErrBossUsername):
+		case errors.Is(err, userErrors.ErrBossUsername):
 			http.Error(w, "Username 'b0ss' is reserved", http.StatusTeapot)
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)

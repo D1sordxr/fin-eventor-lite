@@ -1,7 +1,7 @@
-package account
+package deposit
 
 const (
-	DepositType = "deposit"
+	Deposit = "deposit"
 )
 
 type Event struct {

@@ -7,6 +7,7 @@ import (
 
 type useCase interface {
 	GetAccountBalance(ctx context.Context, accountID string) (float64, error)
+	UpdateAccountBalance(ctx context.Context, accountID string, newBalance float32) error
 }
 
 type Service struct {
@@ -30,5 +31,19 @@ func (s *Service) GetBalance(ctx context.Context, req *services.GetBalanceReques
 
 	return &services.GetBalanceResponse{
 		Balance: float32(balance),
+	}, nil
+}
+
+func (s *Service) UpdateBalance(ctx context.Context, req *services.UpdateBalanceRequest) (*services.UpdateBalanceResponse, error) {
+	accountID := req.GetAccountID()
+	newBalance := req.GetNewBalance()
+
+	err := s.uc.UpdateAccountBalance(ctx, accountID, newBalance)
+	if err != nil {
+		return nil, err
+	}
+
+	return &services.UpdateBalanceResponse{
+		Message: "Balance updated successfully",
 	}, nil
 }

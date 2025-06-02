@@ -12,6 +12,16 @@ message GetBalanceResponse {
   float balance = 1;
 }
 
+message UpdateBalanceRequest {
+  string accountID = 1;
+  float newBalance = 2;
+}
+
+message UpdateBalanceResponse {
+  string message = 1;
+}
+
 service AccountService {
   rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+  rpc UpdateBalance(UpdateBalanceRequest) returns (UpdateBalanceResponse);
 }

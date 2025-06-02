@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AccountService_GetBalance_FullMethodName = "/AccountService/GetBalance"
+	AccountService_GetBalance_FullMethodName    = "/AccountService/GetBalance"
+	AccountService_UpdateBalance_FullMethodName = "/AccountService/UpdateBalance"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountServiceClient interface {
 	GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error)
+	UpdateBalance(ctx context.Context, in *UpdateBalanceRequest, opts ...grpc.CallOption) (*UpdateBalanceResponse, error)
 }
 
 type accountServiceClient struct {
@@ -47,11 +49,22 @@ func (c *accountServiceClient) GetBalance(ctx context.Context, in *GetBalanceReq
 	return out, nil
 }
 
+func (c *accountServiceClient) UpdateBalance(ctx context.Context, in *UpdateBalanceRequest, opts ...grpc.CallOption) (*UpdateBalanceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateBalanceResponse)
+	err := c.cc.Invoke(ctx, AccountService_UpdateBalance_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
 type AccountServiceServer interface {
 	GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error)
+	UpdateBalance(context.Context, *UpdateBalanceRequest) (*UpdateBalanceResponse, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedAccountServiceServer struct{}
 
 func (UnimplementedAccountServiceServer) GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBalance not implemented")
+}
+func (UnimplementedAccountServiceServer) UpdateBalance(context.Context, *UpdateBalanceRequest) (*UpdateBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBalance not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 func (UnimplementedAccountServiceServer) testEmbeddedByValue()                        {}
@@ -104,6 +120,24 @@ func _AccountService_GetBalance_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_UpdateBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).UpdateBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_UpdateBalance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).UpdateBalance(ctx, req.(*UpdateBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBalance",
 			Handler:    _AccountService_GetBalance_Handler,
+		},
+		{
+			MethodName: "UpdateBalance",
+			Handler:    _AccountService_UpdateBalance_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

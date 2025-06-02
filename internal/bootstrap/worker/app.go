@@ -1,12 +1,12 @@
 package worker
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"log/slog"
 )
 
 type App struct {
-	log interfaces.Log
+	log ports.Log
 }
 
 func NewApp() *App {

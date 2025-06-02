@@ -2,7 +2,7 @@ package consumer
 
 import (
 	"context"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 )
 
 type handler interface {
@@ -10,14 +10,14 @@ type handler interface {
 }
 
 type Consumer struct {
-	c interfaces.Consumer
+	c ports.Consumer
 	h handler
 }
 
-func NewConsumer(c interfaces.Consumer, p handler) *Consumer {
+func NewConsumer(c ports.Consumer, h handler) *Consumer {
 	return &Consumer{
 		c: c,
-		h: p,
+		h: h,
 	}
 }
 

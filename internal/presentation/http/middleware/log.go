@@ -1,16 +1,16 @@
 package middleware
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/shared/interfaces"
+	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"net/http"
 	"time"
 )
 
 type LogMid struct {
-	log interfaces.Log
+	log ports.Log
 }
 
-func NewLogMid(log interfaces.Log) *LogMid {
+func NewLogMid(log ports.Log) *LogMid {
 	return &LogMid{
 		log: log,
 	}

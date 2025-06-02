@@ -1,4 +1,4 @@
-package user
+package dto
 
 type DTO struct {
 	ID       string `json:"id"`

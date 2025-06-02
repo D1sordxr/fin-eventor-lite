@@ -1,7 +1,9 @@
-package account
+package services
 
 import (
 	"encoding/json"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account/events/deposit"
 	"github.com/google/uuid"
 )
 
@@ -9,13 +11,13 @@ type Svc struct{}
 
 func (*Svc) CreateEntity(
 	userID string,
-) (Entity, error) {
+) (account.Entity, error) {
 	uID, err := uuid.Parse(userID)
 	if err != nil {
-		return Entity{}, err
+		return account.Entity{}, err
 	}
 
-	return Entity{
+	return account.Entity{
 		ID:      uuid.New(),
 		UserID:  uID,
 		Balance: 0,
@@ -25,21 +27,21 @@ func (*Svc) CreateEntity(
 func (*Svc) CreateDepositEvent(
 	accountID string,
 	amount float64,
-) (Event, error) {
+) (deposit.Event, error) {
 	if err := uuid.Validate(accountID); err != nil {
-		return Event{}, err
+		return deposit.Event{}, err
 	}
 
-	return Event{
+	return deposit.Event{
 		ID:        uuid.NewString(),
 		AccountID: accountID,
 		Amount:    amount,
-		Type:      DepositType,
+		Type:      deposit.Deposit,
 	}, nil
 }
 
 func (*Svc) PayloadEvent(
-	event Event,
+	event deposit.Event,
 ) ([]byte, error) {
 	payload, err := json.Marshal(event)
 	if err != nil {
