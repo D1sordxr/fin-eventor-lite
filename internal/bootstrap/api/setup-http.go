@@ -34,6 +34,7 @@ func setupHTTP(
 
 	chainer := new(midSetup.ChainerImpl)
 
+	traceMid := new(middleware.TracingMid)
 	logMid := middleware.NewLogMid(log)
 	methodPostMid := middleware.NewMethodMid(http.MethodPost)
 	semaphoreMid := middleware.NewSemaphoreMid()
@@ -42,6 +43,7 @@ func setupHTTP(
 	userHandler := user.NewHandler(
 		userUseCase,
 		chainer,
+		traceMid.Trace,
 		logMid.Log,
 		methodPostMid.OnlyPost,
 		semaphoreMid.Limit,
@@ -50,6 +52,7 @@ func setupHTTP(
 	accountHandler := account.NewHandler(
 		accountUseCase,
 		chainer,
+		traceMid.Trace,
 		logMid.Log,
 		methodPostMid.OnlyPost,
 		semaphoreMid.Limit,

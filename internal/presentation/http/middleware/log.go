@@ -29,6 +29,8 @@ func (m *LogMid) Log(next http.Handler) http.Handler {
 				"path", r.URL.Path,
 				"ip", r.RemoteAddr,
 				"user-agent", r.UserAgent(),
+				"trace_id", r.Context().Value(traceIDKey),
+				"request_id", r.Context().Value(requestIDKey),
 			)
 
 			next.ServeHTTP(lrw, r)
@@ -41,6 +43,8 @@ func (m *LogMid) Log(next http.Handler) http.Handler {
 				"ip", r.RemoteAddr,
 				"latency", time.Since(start).String(),
 				"user-agent", r.UserAgent(),
+				"trace_id", r.Context().Value(traceIDKey),
+				"request_id", r.Context().Value(requestIDKey),
 			)
 		},
 	)
