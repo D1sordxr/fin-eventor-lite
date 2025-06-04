@@ -11,6 +11,11 @@ type Repository interface {
 	Save(ctx context.Context, entity account.Entity) error
 }
 
+type BalanceDAO interface {
+	Get(ctx context.Context, id string) (float64, error)
+	Update(ctx context.Context, id string, balance float64) error
+}
+
 type EventStore interface {
 	Save(ctx context.Context, event deposit.Event) error
 }

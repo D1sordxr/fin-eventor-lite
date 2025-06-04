@@ -2,64 +2,113 @@ package api
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/kafka"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"log/slog"
-	"os"
-	"os/signal"
 	"sync"
-	"syscall"
+	"time"
 )
 
 type App struct {
-	log        ports.Log
+	Log        ports.Log
+	Pool       *postgres.Pool
 	HttpServer *appSrv.Server
 	GrpcServer *grpc.Server
+	components []ports.AppComponent
 }
 
-func NewApp() *App {
+func NewApp(ctx context.Context) *App {
+	cfg := config.NewConfig()
+
 	log := slog.Default()
 
-	// TODO: ReadConfig()
+	pool := postgres.NewPool(ctx, &cfg.Storage)
 
-	server := setupHTTP(
+	producer := kafka.NewProducer(&cfg.MessageBroker)
+
+	httpServer := setupHTTP(
+		&cfg.HttpServer,
 		log,
-		"9090", // TODO: Read from config
+		pool,
+		producer,
+	)
+
+	grpcServer := setupGRPC(
+		log,
+		&cfg.GrpcServer,
+		pool,
+	)
+
+	components := setupComponents(
+		httpServer,
+		grpcServer,
+		producer,
+		pool,
 	)
 
 	return &App{
-		log:        log,
-		HttpServer: server,
+		Log:        log,
+		Pool:       pool,
+		HttpServer: httpServer,
+		GrpcServer: grpcServer,
+		components: components,
 	}
 }
 
-func (a *App) Run() {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-
-	appsWg := &sync.WaitGroup{}
+func (a *App) Run(ctx context.Context) {
+	serversWg := &sync.WaitGroup{}
 	errChan := make(chan error, 1)
 
-	appsWg.Add(1)
+	serversWg.Add(1)
 	go func() {
-		defer appsWg.Done()
-		err := a.HttpServer.StartServer()
-		if err != nil {
-			errChan <- err
+		defer serversWg.Done()
+		if err := a.GrpcServer.StartServer(); err != nil {
+			errChan <- fmt.Errorf("grpc server error: %w", err)
+		}
+	}()
+
+	serversWg.Add(1)
+	go func() {
+		defer serversWg.Done()
+		if err := a.HttpServer.StartServer(); err != nil {
+			errChan <- fmt.Errorf("http server error: %w", err)
 		}
 	}()
 
 	select {
 	case <-ctx.Done():
-		a.log.Info("Received shutdown signal, shutting down...")
-		if err := a.HttpServer.Shutdown(ctx); err != nil {
-			a.log.Error("Failed to shutdown HTTP server: " + err.Error())
-		}
+		a.Log.Info("Received shutdown signal, shutting down...")
 	case err := <-errChan:
-		a.log.Error("App error: " + err.Error())
+		a.Log.Error("App error: " + err.Error())
 	}
 
-	appsWg.Wait()
-	a.log.Info("App stopped gracefully")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := a.shutdownComponents(shutdownCtx); err != nil {
+		a.Log.Error("Failed to shutdown components: " + err.Error())
+	} else {
+		a.Log.Info("All components shutdown successfully")
+	}
+
+	serversWg.Wait()
+	a.Log.Info("App stopped gracefully")
+}
+
+func (a *App) shutdownComponents(ctx context.Context) error {
+	var errs []error
+	for _, component := range a.components {
+		err := component.Shutdown(ctx)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("failed to shutdown component %T: %w\n", component, err))
+		}
+	}
+
+	return errors.Join(errs...)
 }

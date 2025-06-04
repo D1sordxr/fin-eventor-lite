@@ -12,13 +12,14 @@ import (
 )
 
 type Repository struct {
-	c Converter
+	c converter
 	e ports.Executor
 }
 
 func NewRepository(
-	c Converter,
-	e ports.Executor) *Repository {
+	e ports.Executor,
+	c converter,
+) *Repository {
 	return &Repository{
 		c: c,
 		e: e,

@@ -5,9 +5,9 @@ import (
 	userUC "github.com/D1sordxr/fin-eventor-lite/internal/application/user"
 	accountDomainSvc "github.com/D1sordxr/fin-eventor-lite/internal/domain/account/services"
 	userDomain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
+	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/http"
 	midSetup "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/kafka/mocks"
-	accountMocks "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres/account/mocks"
+	accountStore "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres/account"
 	userStore "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres/user"
 	httpSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/http/delivery/account"
@@ -18,18 +18,23 @@ import (
 )
 
 func setupHTTP(
+	config *cfg.Config,
 	log ports.Log,
-	port string,
+	storage ports.Storage,
+	msgProducer ports.Producer,
 ) *httpSrv.Server {
 
-	accountUseCase := accountUC.NewUseCase(
-		new(accountDomainSvc.Svc),
-		accountMocks.NewMockRepo(), // Mock
-		new(mocks.Producer),        // Mock
-	)
+	accountRepo := accountStore.NewRepository(storage, new(accountStore.Converter))
+	userRepo := userStore.NewRepository(storage, new(userStore.Converter))
+
 	userUseCase := userUC.NewUseCase(
 		new(userDomain.Svc),
-		userStore.NewMockRepo(), // Mock
+		userRepo,
+	)
+	accountUseCase := accountUC.NewUseCase(
+		new(accountDomainSvc.Svc),
+		accountRepo,
+		msgProducer,
 	)
 
 	chainer := new(midSetup.ChainerImpl)
@@ -60,7 +65,8 @@ func setupHTTP(
 	)
 
 	return httpSrv.NewServer(
-		port,
+		log,
+		config,
 		userHandler,
 		accountHandler,
 	)
