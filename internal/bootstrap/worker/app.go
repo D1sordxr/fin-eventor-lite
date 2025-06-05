@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"context"
 	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"log/slog"
 )
@@ -9,12 +10,21 @@ type App struct {
 	log ports.Log
 }
 
-func NewApp() *App {
+func NewApp(ctx context.Context) *App {
 	log := slog.Default()
+
+	_ = ctx
 
 	return &App{
 		log: log,
 	}
 }
 
-func (a *App) Run() {}
+func (a *App) Run(ctx context.Context) {
+	a.log.Info("Worker application is starting...")
+
+	select {
+	case <-ctx.Done():
+		a.log.Info("Worker application is shutting down gracefully")
+	}
+}
