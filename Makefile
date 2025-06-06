@@ -20,7 +20,7 @@ clean:
 
 # Run the Go application locally (outside the container)
 run:
-	go run ./cmd/app
+	go run ./cmd/api/main.go
 
 # Run all tests
 test:
@@ -29,3 +29,6 @@ test:
 # Show logs from all services
 logs:
 	docker-compose logs -f --tail=100
+
+lint:
+	golangci-lint run ./...

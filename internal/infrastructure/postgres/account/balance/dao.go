@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
+	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account/errors"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	"github.com/D1sordxr/fin-eventor-lite/pkg/postgres/codes"
 	"github.com/jackc/pgx/v5"

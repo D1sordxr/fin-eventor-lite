@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	userErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
+	userErrors "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user/errors"
+
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user"
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	"github.com/D1sordxr/fin-eventor-lite/pkg/postgres/codes"

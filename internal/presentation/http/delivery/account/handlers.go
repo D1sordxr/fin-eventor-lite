@@ -6,8 +6,9 @@ import (
 	"errors"
 	"net/http"
 
+	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account/errors"
+
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
-	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
 )
 

@@ -3,7 +3,8 @@ package services
 import (
 	"encoding/json"
 
-	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account/errors"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account"
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account/events/deposit"
 	"github.com/google/uuid"

@@ -34,10 +34,12 @@ func (uc *DepositUseCase) ProcessDeposit(ctx context.Context, dto dto.EventDTO) 
 		return err
 	}
 
-	_, err = uc.client.UpdateBalance(ctx, &services.UpdateBalanceRequest{
+	if _, err = uc.client.UpdateBalance(ctx, &services.UpdateBalanceRequest{
 		AccountID:  account.ID.String(),
 		NewBalance: float32(account.Balance),
-	})
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }

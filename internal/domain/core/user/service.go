@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user/errors"
 	"github.com/google/uuid"
 )
 
