@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"time"
@@ -15,7 +16,7 @@ type RetryMid struct{}
 func (*RetryMid) RetryWithBackoff(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			//lastErr := fmt.Errorf("Service temporarily unavailable")
+			lastErr := fmt.Errorf("service temporarily unavailable")
 			backoff := time.Second * 1
 
 			for i := 0; i < retryCount; i++ {
@@ -27,16 +28,16 @@ func (*RetryMid) RetryWithBackoff(next http.Handler) http.Handler {
 						w.Header()[k] = v
 					}
 					w.WriteHeader(rr.Code)
-					rr.Body.WriteTo(w)
+					_, _ = rr.Body.WriteTo(w)
 					return
 				}
 
-				//lastErr = fmt.Errorf("Attempt %d failed with status code %d", i+1, rr.Code)
+				lastErr = fmt.Errorf("attempt %d failed with status code %d", i+1, rr.Code)
 				time.Sleep(backoff)
 				backoff *= 2
 			}
 
-			http.Error(w, "Service temporarily unavailable", http.StatusServiceUnavailable)
+			http.Error(w, lastErr.Error(), http.StatusServiceUnavailable)
 		},
 	)
 }

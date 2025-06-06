@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/postgres"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

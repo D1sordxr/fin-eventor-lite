@@ -2,7 +2,8 @@ package ports
 
 import (
 	"context"
-	"github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user"
 )
 
 type Repository interface {

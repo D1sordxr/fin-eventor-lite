@@ -2,6 +2,7 @@ package events
 
 import (
 	"context"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/ports"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc/pb/services"

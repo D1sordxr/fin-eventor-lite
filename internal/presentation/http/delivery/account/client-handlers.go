@@ -3,10 +3,11 @@ package account
 import (
 	"context"
 	"encoding/json"
-	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
-	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc/pb/services"
 	"net/http"
 	"time"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
+	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc/pb/services"
 )
 
 type ClientHandler struct {

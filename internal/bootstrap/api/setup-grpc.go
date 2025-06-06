@@ -2,11 +2,11 @@ package api
 
 import (
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/balance"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/grpc"
 	balanceStore "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres/account/balance"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc/services/account"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 )
 
 func setupGRPC(

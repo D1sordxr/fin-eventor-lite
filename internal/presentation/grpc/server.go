@@ -2,12 +2,13 @@ package grpc
 
 import (
 	"context"
+	"net"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/grpc"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc/pb/services"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
-	"net"
 )
 
 type Server struct {

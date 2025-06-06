@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/D1sordxr/fin-eventor-lite/internal/bootstrap/worker"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/bootstrap/worker"
 )
 
 func main() {

@@ -1,0 +1,14 @@
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - gosimple
+    - unused
+    - revive
+    - ineffassign
+    - gocyclo
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15

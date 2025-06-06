@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	domain "github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
 	accountErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/account/errors"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/http/middleware"
-	"net/http"
 )
 
 type useCase interface {

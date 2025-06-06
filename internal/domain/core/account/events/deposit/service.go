@@ -2,7 +2,7 @@ package deposit
 
 import (
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
-	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account"
 	"github.com/google/uuid"
 )
 

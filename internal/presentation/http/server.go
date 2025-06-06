@@ -3,9 +3,10 @@ package http
 import (
 	"context"
 	"errors"
-	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/http"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"net/http"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
+	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/http"
 )
 
 type Handler interface {

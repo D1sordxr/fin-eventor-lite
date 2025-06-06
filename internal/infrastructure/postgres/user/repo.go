@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	userErrors "github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
+	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	"github.com/D1sordxr/fin-eventor-lite/pkg/postgres/codes"
 	"github.com/jackc/pgx/v5/pgconn"
 )

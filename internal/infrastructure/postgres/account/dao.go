@@ -3,8 +3,9 @@ package account
 import (
 	"context"
 	"errors"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	"github.com/jackc/pgx/v5"
 )
 

@@ -1,19 +1,20 @@
 package config
 
 import (
+	"os"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/grpc"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/http"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/kafka"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/postgres"
 	"github.com/ilyakaznacheev/cleanenv"
-	"os"
 )
 
 type Config struct {
 	Storage       postgres.Config `yaml:"storage"`
 	MessageBroker kafka.Config    `yaml:"message_broker"`
-	HttpServer    http.Config     `yaml:"http"`
-	GrpcServer    grpc.Config     `yaml:"grpc"`
+	HTTPServer    http.Config     `yaml:"http"`
+	GRPCServer    grpc.Config     `yaml:"grpc"`
 }
 
 const BasicConfigPath = "./configs/app/local.yaml"

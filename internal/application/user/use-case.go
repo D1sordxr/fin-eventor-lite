@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/dto"
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/ports"
 )

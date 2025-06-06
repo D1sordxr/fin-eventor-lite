@@ -2,8 +2,9 @@ package worker
 
 import (
 	"context"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"log/slog"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 )
 
 type App struct {

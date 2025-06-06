@@ -2,6 +2,7 @@ package kafka
 
 import (
 	"context"
+
 	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/kafka"
 	"github.com/segmentio/kafka-go"
 )

@@ -2,8 +2,9 @@ package user
 
 import (
 	"context"
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
 	"sync"
+
+	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user"
 )
 
 type MockRepo struct {
@@ -18,7 +19,7 @@ func NewMockRepo() *MockRepo {
 	}
 }
 
-func (m *MockRepo) Save(ctx context.Context, e domain.Entity) error {
+func (m *MockRepo) Save(_ context.Context, e domain.Entity) error {
 	m.m.Lock()
 	defer m.m.Unlock()
 

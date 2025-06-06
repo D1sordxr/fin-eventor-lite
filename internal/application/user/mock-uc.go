@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/user/dto"
 	errors2 "github.com/D1sordxr/fin-eventor-lite/internal/application/user/errors"
 	"github.com/google/uuid"

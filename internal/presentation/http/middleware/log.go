@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
 	"net/http"
 	"time"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 )
 
 type LogMid struct {

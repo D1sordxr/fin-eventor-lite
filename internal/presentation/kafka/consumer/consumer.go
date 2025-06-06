@@ -2,7 +2,8 @@ package consumer
 
 import (
 	"context"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 )
 
 type handler interface {

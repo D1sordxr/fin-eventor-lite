@@ -1,7 +1,7 @@
 package ports
 
 import (
-	"github.com/D1sordxr/fin-eventor-lite/internal/domain/user"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/user"
 )
 
 type Svc interface {

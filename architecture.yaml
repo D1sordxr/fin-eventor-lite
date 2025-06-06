@@ -1,0 +1,38 @@
+project: "fin-eventor-lite"
+
+architecture:
+  name: "Fin-eventor Architecture"
+
+  layers:
+    - name: "domain"
+      packages:
+        - "github.com/D1sordxr/fin-eventor-lite/internal/domain/..."
+
+    - name: "application"
+      packages:
+        - "github.com/D1sordxr/fin-eventor-lite/internal/application/..."
+
+    - name: "infrastructure"
+      packages:
+        - "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/..."
+
+    - name: "presentation"
+      packages:
+        - "github.com/D1sordxr/fin-eventor-lite/internal/presentation/..."
+
+  constraints:
+    - source: "domain"
+      allowedLayers: []
+
+    - source: "application"
+      allowedLayers:
+        - "domain"
+
+    - source: "presentation"
+      allowedLayers:
+        - "application"
+
+    - source: "infrastructure"
+      allowedLayers:
+        - "application"
+        - "domain"

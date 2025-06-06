@@ -2,9 +2,10 @@ package ports
 
 import (
 	"context"
+
 	"github.com/D1sordxr/fin-eventor-lite/internal/application/account/dto"
-	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
-	"github.com/D1sordxr/fin-eventor-lite/internal/domain/account/events/deposit"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account"
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account/events/deposit"
 )
 
 type Repository interface {

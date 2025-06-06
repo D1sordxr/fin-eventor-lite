@@ -2,25 +2,26 @@ package api
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"log/slog"
+	"sync"
+	"time"
+
+	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
+	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/app"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/kafka"
 	"github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/postgres"
 	"github.com/D1sordxr/fin-eventor-lite/internal/presentation/grpc"
 	appSrv "github.com/D1sordxr/fin-eventor-lite/internal/presentation/http"
-	"github.com/D1sordxr/fin-eventor-lite/internal/shared/ports"
-	"log/slog"
-	"sync"
-	"time"
 )
 
 type App struct {
 	Log        ports.Log
 	Pool       *postgres.Pool
-	HttpServer *appSrv.Server
-	GrpcServer *grpc.Server
-	components []ports.AppComponent
+	HTTPServer *appSrv.Server
+	GRPCServer *grpc.Server
+	Shutdowner ports.Shutdowner
 }
 
 func NewApp(ctx context.Context) *App {
@@ -32,22 +33,22 @@ func NewApp(ctx context.Context) *App {
 
 	producer := kafka.NewProducer(&cfg.MessageBroker)
 
-	httpServer := setupHTTP(
-		&cfg.HttpServer,
+	HTTPServer := setupHTTP(
+		&cfg.HTTPServer,
 		log,
 		pool,
 		producer,
 	)
 
-	grpcServer := setupGRPC(
+	GRPCServer := setupGRPC(
 		log,
-		&cfg.GrpcServer,
+		&cfg.GRPCServer,
 		pool,
 	)
 
-	components := setupComponents(
-		httpServer,
-		grpcServer,
+	shutdowner := app.NewShutdowner(
+		HTTPServer,
+		GRPCServer,
 		producer,
 		pool,
 	)
@@ -55,9 +56,9 @@ func NewApp(ctx context.Context) *App {
 	return &App{
 		Log:        log,
 		Pool:       pool,
-		HttpServer: httpServer,
-		GrpcServer: grpcServer,
-		components: components,
+		HTTPServer: HTTPServer,
+		GRPCServer: GRPCServer,
+		Shutdowner: shutdowner,
 	}
 }
 
@@ -68,7 +69,7 @@ func (a *App) Run(ctx context.Context) {
 	serversWg.Add(1)
 	go func() {
 		defer serversWg.Done()
-		if err := a.GrpcServer.StartServer(); err != nil {
+		if err := a.GRPCServer.StartServer(); err != nil {
 			errChan <- fmt.Errorf("grpc server error: %w", err)
 		}
 	}()
@@ -76,7 +77,7 @@ func (a *App) Run(ctx context.Context) {
 	serversWg.Add(1)
 	go func() {
 		defer serversWg.Done()
-		if err := a.HttpServer.StartServer(); err != nil {
+		if err := a.HTTPServer.StartServer(); err != nil {
 			errChan <- fmt.Errorf("http server error: %w", err)
 		}
 	}()
@@ -91,7 +92,7 @@ func (a *App) Run(ctx context.Context) {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := a.shutdownComponents(shutdownCtx); err != nil {
+	if err := a.Shutdowner.ShutdownComponents(shutdownCtx); err != nil {
 		a.Log.Error("Failed to shutdown components: " + err.Error())
 	} else {
 		a.Log.Info("All components shutdown successfully")
@@ -99,16 +100,4 @@ func (a *App) Run(ctx context.Context) {
 
 	serversWg.Wait()
 	a.Log.Info("App stopped gracefully")
-}
-
-func (a *App) shutdownComponents(ctx context.Context) error {
-	var errs []error
-	for _, component := range a.components {
-		err := component.Shutdown(ctx)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("failed to shutdown component %T: %w\n", component, err))
-		}
-	}
-
-	return errors.Join(errs...)
 }

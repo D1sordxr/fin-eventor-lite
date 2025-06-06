@@ -2,8 +2,9 @@ package mocks
 
 import (
 	"context"
-	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/account"
 	"sync"
+
+	domain "github.com/D1sordxr/fin-eventor-lite/internal/domain/core/account"
 )
 
 type MockRepo struct {
