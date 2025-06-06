@@ -27,5 +27,6 @@ func (a *App) Run(ctx context.Context) {
 	select {
 	case <-ctx.Done():
 		a.log.Info("Worker application is shutting down gracefully")
+		return
 	}
 }
