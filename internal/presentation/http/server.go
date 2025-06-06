@@ -3,10 +3,9 @@ package http
 import (
 	"context"
 	"errors"
-	"net/http"
-
 	"github.com/D1sordxr/fin-eventor-lite/internal/domain/ports"
 	cfg "github.com/D1sordxr/fin-eventor-lite/internal/infrastructure/config/http"
+	"net/http"
 )
 
 type Handler interface {
@@ -29,7 +28,8 @@ func NewServer(
 	return &Server{
 		log: log,
 		Server: &http.Server{
-			Addr: ":" + config.Port,
+			Addr:              ":" + config.Port,
+			ReadHeaderTimeout: config.Timeout,
 		},
 		Routes: routes,
 	}

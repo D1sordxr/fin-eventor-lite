@@ -1,14 +1,22 @@
+run:
+  timeout: 5m
+  tests: true
+
 linters:
   enable:
-    - govet
-    - staticcheck
-    - errcheck
-    - gosimple
-    - unused
-    - revive
-    - ineffassign
-    - gocyclo
+    - govet           # стандартный анализатор
+    - staticcheck     # best practices + умный анализ
+    - errcheck        # проверка игнорирования ошибок
+    - gosimple        # упрощения кода
+    - unused          # неиспользуемые переменные и импорты
+    - revive          # гибкие стиль-гайды
+    - ineffassign     # неэффективные присваивания
+    - gocyclo         # сложность кода (цикломатическая)
+    - typecheck       # проблемы с типами
+    - asasalint       # правильность errors.As / errors.Is
+    - bodyclose       # забытый resp.Body.Close()
+    - gosec           # анализ безопасности
 
-linters-settings:
-  gocyclo:
-    min-complexity: 15
+issues:
+  max-issues-per-linter: 100
+  max-same-issues: 5
