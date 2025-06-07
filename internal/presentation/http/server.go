@@ -31,6 +31,8 @@ func NewServer(
 		Server: &http.Server{
 			Addr:              ":" + config.Port,
 			ReadHeaderTimeout: config.Timeout,
+			ReadTimeout:       config.Timeout,
+			WriteTimeout:      config.Timeout,
 		},
 		Routes: routes,
 	}
