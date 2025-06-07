@@ -24,9 +24,6 @@ func NewApp(ctx context.Context) *App {
 func (a *App) Run(ctx context.Context) {
 	a.log.Info("Worker application is starting...")
 
-	select {
-	case <-ctx.Done():
-		a.log.Info("Worker application is shutting down gracefully")
-		return
-	}
+	<-ctx.Done()
+	a.log.Info("Worker application is shutting down gracefully")
 }
